@@ -8,47 +8,23 @@ st.set_page_config(page_title="EducatEd Choice Dashboard", layout="wide")
 
 st.markdown("""
 <style>
-.main-title {
-    font-size: 44px;
-    font-weight: 800;
-    color: #1f2a44;
-    margin-bottom: 5px;
-}
-.subtitle {
-    font-size: 18px;
-    color: #5f6b7a;
-    margin-bottom: 30px;
-}
-.card {
-    background-color: #f8fafc;
-    padding: 22px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    margin-bottom: 20px;
-}
-.metric-card {
-    background-color: white;
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.04);
-}
-.section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1f2a44;
-    margin-top: 15px;
-}
+.main-title {font-size: 44px; font-weight: 800; color: #1f2a44; margin-bottom: 5px;}
+.subtitle {font-size: 18px; color: #5f6b7a; margin-bottom: 30px;}
+.card {background-color: #f8fafc; padding: 22px; border-radius: 16px; border: 1px solid #e5e7eb; margin-bottom: 20px;}
+.section-title {font-size: 24px; font-weight: 700; color: #1f2a44; margin-top: 15px;}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">EducatEd Choice Dashboard</div>', unsafe_allow_html=True)
-st.markdown(
-    '<div class="subtitle">Interactive school matching dashboard based on academic performance and stability.</div>',
-    unsafe_allow_html=True
-)
+st.markdown('<div class="subtitle">Interactive school matching dashboard based on academic performance and stability.</div>', unsafe_allow_html=True)
 
 df = pd.read_csv("master_school_table_v5_2023_24.csv")
+
+st.sidebar.title("Dashboard Menu")
+view = st.sidebar.radio(
+    "Select View",
+    ["School Matching Map", "Dataset Overview", "PCA Insights"]
+)
 
 features = [
     "grad_rate", "cohort_size", "sat_total", "mobility_rate",
@@ -81,74 +57,118 @@ def assign_profile(row):
 pca_df["school_profile"] = pca_df.apply(assign_profile, axis=1)
 
 col1, col2, col3, col4 = st.columns(4)
-
 col1.metric("Total Schools", f"{len(df):,}")
 col2.metric("Avg Graduation Rate", f"{df['grad_rate'].mean():.1f}%")
 col3.metric("Avg SAT", f"{df['sat_total'].mean():.0f}")
 col4.metric("Avg Mobility Rate", f"{df['mobility_rate'].mean():.1f}%")
 
-st.markdown('<div class="section-title">School Matching Map</div>', unsafe_allow_html=True)
+if view == "School Matching Map":
+    st.markdown('<div class="section-title">School Matching Map</div>', unsafe_allow_html=True)
 
-fig = px.scatter(
-    pca_df,
-    x="PC1",
-    y="PC2",
-    color="grad_rate",
-    hover_name="school_name",
-    hover_data={
-        "school_profile": True,
-        "grad_rate": ":.1f",
-        "sat_total": ":,.0f",
-        "hope_eligible_percent": ":.1f",
-        "mobility_rate": ":.1f",
-        "PC1": False,
-        "PC2": False
-    },
-    labels={
-        "PC1": "Academic Performance",
-        "PC2": "Stability / Structure",
-        "grad_rate": "Graduation Rate",
-        "school_profile": "Profile",
-        "sat_total": "SAT Total",
-        "hope_eligible_percent": "HOPE Eligible (%)",
-        "mobility_rate": "Mobility Rate (%)"
-    },
-    color_continuous_scale="Viridis",
-    opacity=0.82
-)
+    fig = px.scatter(
+        pca_df,
+        x="PC1",
+        y="PC2",
+        color="grad_rate",
+        hover_name="school_name",
+        hover_data={
+            "school_profile": True,
+            "grad_rate": ":.1f",
+            "sat_total": ":,.0f",
+            "hope_eligible_percent": ":.1f",
+            "mobility_rate": ":.1f",
+            "PC1": False,
+            "PC2": False
+        },
+        labels={
+            "PC1": "Academic Performance",
+            "PC2": "Stability / Structure",
+            "grad_rate": "Graduation Rate",
+            "school_profile": "Profile",
+            "sat_total": "SAT Total",
+            "hope_eligible_percent": "HOPE Eligible (%)",
+            "mobility_rate": "Mobility Rate (%)"
+        },
+        color_continuous_scale="Viridis",
+        opacity=0.82
+    )
 
-fig.add_hline(y=0, line_dash="dash", line_color="gray")
-fig.add_vline(x=0, line_dash="dash", line_color="gray")
+    fig.add_hline(y=0, line_dash="dash", line_color="gray")
+    fig.add_vline(x=0, line_dash="dash", line_color="gray")
+    fig.update_traces(marker=dict(size=8, line=dict(width=0.5, color="white")))
+    fig.update_layout(
+        height=620,
+        margin=dict(l=20, r=20, t=40, b=20),
+        template="plotly_white",
+        coloraxis_colorbar=dict(title="Graduation<br>Rate")
+    )
 
-fig.update_traces(marker=dict(size=8, line=dict(width=0.5, color="white")))
+    st.plotly_chart(fig, use_container_width=True)
 
-fig.update_layout(
-    height=620,
-    margin=dict(l=20, r=20, t=40, b=20),
-    template="plotly_white",
-    coloraxis_colorbar=dict(title="Graduation<br>Rate")
-)
+    left, right = st.columns([1.2, 1])
 
-st.plotly_chart(fig, use_container_width=True)
+    with left:
+        st.markdown('<div class="section-title">How to Read This Map</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="card">
+        <b>Academic Performance</b> is shown on the horizontal axis. Schools farther right tend to perform stronger academically.<br><br>
+        <b>Stability / Structure</b> is shown on the vertical axis. Schools higher on the map tend to show stronger stability patterns.<br><br>
+        The top-right area represents schools that combine stronger performance with stronger stability.
+        </div>
+        """, unsafe_allow_html=True)
 
-left, right = st.columns([1.2, 1])
+    with right:
+        st.markdown('<div class="section-title">Key Insights</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="card">
+        • PC1 captures the main academic performance pattern.<br>
+        • PC2 highlights stability and structural differences.<br>
+        • This map helps connect parent priorities to school profiles.
+        </div>
+        """, unsafe_allow_html=True)
 
-with left:
-    st.markdown('<div class="section-title">How to Read This Map</div>', unsafe_allow_html=True)
+elif view == "Dataset Overview":
+    st.markdown('<div class="section-title">Dataset Overview</div>', unsafe_allow_html=True)
+
     st.markdown("""
     <div class="card">
-    <b>Academic Performance</b> is shown on the horizontal axis. Schools farther right tend to perform stronger academically.<br><br>
-    <b>Stability / Structure</b> is shown on the vertical axis. Schools higher on the map tend to show stronger stability patterns.<br><br>
-    The top-right area represents schools that combine stronger performance with stronger stability.
+    This view shows the main school-level dataset used for the dashboard and PCA analysis.
+    The dataset includes academic performance, school size, mobility, discipline, and HOPE eligibility variables.
     </div>
     """, unsafe_allow_html=True)
 
-with right:
-    st.markdown('<div class="section-title">Key Insights</div>', unsafe_allow_html=True)
+    st.write("Rows:", df.shape[0])
+    st.write("Columns:", df.shape[1])
+    st.dataframe(df.head(50), use_container_width=True)
+
+elif view == "PCA Insights":
+    st.markdown('<div class="section-title">PCA Insights</div>', unsafe_allow_html=True)
+
+    explained_var = pca.explained_variance_ratio_
+    variance_df = pd.DataFrame({
+        "Principal Component": [f"PC{i+1}" for i in range(len(explained_var))],
+        "Variance Explained": explained_var
+    })
+
+    fig_var = px.bar(
+        variance_df.head(5),
+        x="Principal Component",
+        y="Variance Explained",
+        title="Explained Variance by Principal Component",
+        text_auto=".1%"
+    )
+
+    fig_var.update_layout(
+        yaxis_tickformat=".0%",
+        height=500,
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig_var, use_container_width=True)
+
     st.markdown("""
     <div class="card">
-    • PC1 captures the main academic performance pattern.<br>
-    • PC2 highlights stability and structural differences.<br>
-    • This map helps connect parent priorities to school profiles.
+    PCA reduces several school variables into a smaller set of dimensions.
+    PC1 represents the main academic performance pattern, while PC2 captures stability and structural differences.
     </div>
     """, unsafe_allow_html=True)
