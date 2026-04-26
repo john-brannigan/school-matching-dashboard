@@ -159,6 +159,124 @@
     </p>
     <img src="images/explained-variance.png" alt="Explained Variance">
   </div>
+  <div class="card">
+  <h2>Bonus D3.js Chart: PCA Variance Explained</h2>
+  <p>
+    This chart shows how much information each principal component captures.
+    PC1 explains the largest share, meaning it captures the most important
+    academic performance pattern used in our school matching system.
+  </p>
+
+  <div id="d3-chart"></div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+const data = [
+  { component: "PC1", variance: 39.9 },
+  { component: "PC2", variance: 17.2 },
+  { component: "PC3", variance: 15.0 },
+  { component: "PC4", variance: 12.5 },
+  { component: "PC5", variance: 8.5 }
+];
+
+const margin = { top: 40, right: 30, bottom: 60, left: 70 };
+const width = 750 - margin.left - margin.right;
+const height = 420 - margin.top - margin.bottom;
+
+const svg = d3.select("#d3-chart")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+// Gradient
+const defs = svg.append("defs");
+const gradient = defs.append("linearGradient")
+  .attr("id", "bar-gradient")
+  .attr("x1", "0%")
+  .attr("y1", "0%")
+  .attr("x2", "0%")
+  .attr("y2", "100%");
+
+gradient.append("stop")
+  .attr("offset", "0%")
+  .attr("stop-color", "#3b82f6");
+
+gradient.append("stop")
+  .attr("offset", "100%")
+  .attr("stop-color", "#1e3a8a");
+
+// Scales
+const x = d3.scaleBand()
+  .domain(data.map(d => d.component))
+  .range([0, width])
+  .padding(0.3);
+
+const y = d3.scaleLinear()
+  .domain([0, d3.max(data, d => d.variance) + 5])
+  .range([height, 0]);
+
+// Gridlines
+svg.append("g")
+  .attr("class", "grid")
+  .call(d3.axisLeft(y)
+    .tickSize(-width)
+    .tickFormat(""))
+  .attr("color", "#e5e7eb");
+
+// Axes
+svg.append("g")
+  .attr("transform", `translate(0,${height})`)
+  .call(d3.axisBottom(x))
+  .selectAll("text")
+  .style("font-size", "13px");
+
+svg.append("g")
+  .call(d3.axisLeft(y).tickFormat(d => d + "%"))
+  .selectAll("text")
+  .style("font-size", "13px");
+
+// Bars with animation
+svg.selectAll("rect")
+  .data(data)
+  .enter()
+  .append("rect")
+  .attr("x", d => x(d.component))
+  .attr("width", x.bandwidth())
+  .attr("y", height)
+  .attr("height", 0)
+  .attr("rx", 6)
+  .attr("fill", "url(#bar-gradient)")
+  .transition()
+  .duration(800)
+  .attr("y", d => y(d.variance))
+  .attr("height", d => height - y(d.variance));
+
+// Value labels
+svg.selectAll(".label")
+  .data(data)
+  .enter()
+  .append("text")
+  .attr("x", d => x(d.component) + x.bandwidth() / 2)
+  .attr("y", d => y(d.variance) - 10)
+  .attr("text-anchor", "middle")
+  .style("font-size", "13px")
+  .style("font-weight", "600")
+  .style("fill", "#1f2a44")
+  .text(d => d.variance + "%");
+
+// Title inside chart
+svg.append("text")
+  .attr("x", width / 2)
+  .attr("y", -10)
+  .attr("text-anchor", "middle")
+  .style("font-size", "16px")
+  .style("font-weight", "700")
+  .text("Explained Variance by PCA Components");
+</script>
 
   <div class="card">
     <h2>Interactive Dashboard</h2>
