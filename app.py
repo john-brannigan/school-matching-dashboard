@@ -16,6 +16,7 @@ st.markdown("""
     border-radius: 14px;
     border: 1px solid #e5e7eb;
     margin-bottom: 18px;
+    line-height: 1.6;
 }
 .section-title {
     font-size: 24px;
@@ -26,7 +27,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-title">EducatEd Choice: School Matching Dashboard</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Helping families find the best-fit school using data-driven insights.</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="subtitle">Helping families find the best-fit school using data-driven insights.</div>',
+    unsafe_allow_html=True
+)
 
 df = pd.read_csv("master_school_table_v5_2023_24.csv")
 
@@ -45,6 +49,7 @@ df_pca = df[features].copy()
 df_pca = df_pca.fillna(df_pca.median())
 
 X_scaled = StandardScaler().fit_transform(df_pca)
+
 pca = PCA()
 X_pca = pca.fit_transform(X_scaled)
 
@@ -116,9 +121,14 @@ if view == "School Matching Map":
 
     st.markdown("""
     <div class="card">
-    <b>How this supports matching:</b><br>
-    PC1 represents academic performance, while PC2 represents stability/structure.
-    This helps group schools into profiles instead of only ranking them by one number.
+    <b>How this map helps match schools:</b><br><br>
+    This chart combines many school factors into two simple ideas:
+    <b>academic performance</b> and <b>school stability/structure</b>.<br><br>
+    Instead of comparing schools one column at a time, this map shows the big picture:
+    <br>• Right side → stronger academic outcomes
+    <br>• Top side → stronger stability pattern
+    <br>• Top-right area → stronger overall match<br><br>
+    This supports the main goal of EducatEd Choice: turning complex school data into a simple tool families can use to compare schools based on what matters most to them.
     </div>
     """, unsafe_allow_html=True)
 
@@ -149,8 +159,12 @@ elif view == "PCA Analysis":
 
     st.markdown("""
     <div class="card">
-    This chart shows how schools separate across the first two principal components.
-    The graduation-rate color gradient helps show that PC1 is strongly connected to academic performance.
+    <b>What this chart shows:</b><br><br>
+    Each point represents one school. Schools with similar academic and structural patterns are placed closer together,
+    while schools with different patterns are farther apart.<br><br>
+    The color represents graduation rate. The right side of the chart generally contains schools with stronger graduation outcomes,
+    which shows that <b>PC1 is closely connected to academic performance</b>.<br><br>
+    This is important because the matching system needs a fair way to compare schools using several variables at once, not just one score.
     </div>
     """, unsafe_allow_html=True)
 
@@ -201,7 +215,11 @@ elif view == "PCA Analysis":
 
     st.markdown("""
     <div class="card">
-    This chart explains what is driving PC1. Academic variables, school structure, and school scale all help explain why schools differ.
+    <b>Why this chart matters:</b><br><br>
+    This chart shows which variables are most responsible for separating schools in the PCA model.<br><br>
+    Academic factors like graduation rate, SAT score, and HOPE eligibility are important, but the chart also shows that school size and mobility-related variables play a role.<br><br>
+    This supports the client’s matching idea because a good school match should not only consider test scores.
+    It should also consider the school environment, size, and stability.
     </div>
     """, unsafe_allow_html=True)
 
@@ -239,12 +257,26 @@ elif view == "PCA Analysis":
 
     st.markdown("""
     <div class="card">
-    PC1 explains the largest share of variance, while the cumulative line shows how much information is captured as more components are included.
+    <b>Why PCA is useful here:</b><br><br>
+    Schools have many different variables, which can be hard to compare directly.
+    PCA simplifies those variables into a smaller number of meaningful patterns.<br><br>
+    PC1 explains the largest share of the difference between schools, so it becomes the strongest summary dimension for comparison.
+    The cumulative line shows how much information is captured as more components are added.<br><br>
+    This helps justify using PCA in the matching system because it keeps the most important information while making the results easier to explain.
     </div>
     """, unsafe_allow_html=True)
 
 elif view == "Dataset":
     st.markdown('<div class="section-title">Dataset Overview</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="card">
+    This dataset is the foundation of the dashboard. It includes school-level academic and structural variables such as graduation rate,
+    SAT score, mobility, discipline, cohort size, and HOPE eligibility.<br><br>
+    These variables are used to create the PCA model and support the school matching logic shown in the dashboard.
+    </div>
+    """, unsafe_allow_html=True)
+
     st.write("Rows:", df.shape[0])
     st.write("Columns:", df.shape[1])
     st.dataframe(df.head(50), use_container_width=True)
