@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EducatEd Choice</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f8fafc;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #1f2a44;
+      color: white;
+      padding: 50px 10%;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    section {
+      padding: 40px 10%;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      color: #1f2a44;
+    }
+
+    img {
+      width: 100%;
+      max-width: 850px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+    }
+
+    a {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    .button {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #1f2a44;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>EducatEd Choice</h1>
+  <p>A Data-Driven School Matching System</p>
+</header>
+
+<section>
+  <div class="card">
+    <h2>Project Overview</h2>
+    <p>
+      EducatEd Choice helps families compare schools using data-driven insights.
+      The project analyzes school-level academic performance, stability, mobility,
+      and school structure to support better school matching recommendations.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Team and Client</h2>
+    <p><strong>Team Members:</strong> Pine Nguyen, John, Victoria</p>
+    <p><strong>Client:</strong> Dr. LaDessa Mitchell / FYG Management LLC</p>
+  </div>
+
+  <div class="card">
+    <h2>Datasets</h2>
+    <ul>
+      <li><a href="https://gosa.georgia.gov/dashboards-data-report-card/downloadable-data" target="_blank">Georgia Department of Education / GOSA Data</a></li>
+      <li><a href="https://georgiainsights.gadoe.org/data-downloads/" target="_blank">Georgia Insights Data Portal</a></li>
+      <li><a href="https://nces.ed.gov/ccd/files.asp" target="_blank">NCES Public School Data</a></li>
+      <li><a href="https://www.usnews.com/education" target="_blank">U.S. News School Data</a></li>
+      <li><a href="https://www.gcpsk12.org" target="_blank">Gwinnett County Public Schools</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Data Processing and Model</h2>
+    <p>
+      The datasets were cleaned, standardized, and combined into a school-level
+      dataset. Key columns include graduation rate, SAT score, HOPE eligibility,
+      cohort size, mobility rate, mobility count, and discipline percentage.
+      PCA was used to reduce these variables into meaningful matching dimensions.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Result 1: School Matching Map</h2>
+    <p>
+      The PCA map groups schools based on academic performance and stability.
+      This helps translate complex school data into a simple matching view for families.
+    </p>
+    <img src="images/scatter-plot.png" alt="School Matching PCA Scatter Plot">
+  </div>
+
+  <div class="card">
+    <h2>Result 2: Key Drivers of School Differences</h2>
+    <p>
+      This chart shows that school differences are shaped by academic performance,
+      school structure, and school scale. This supports the matching system because
+      school choice should consider more than test scores alone.
+    </p>
+    <img src="images/key-drivers.png" alt="Key Drivers of School Differences">
+  </div>
+
+  <div class="card">
+    <h2>Result 3: Explained Variance</h2>
+    <p>
+      The explained variance chart shows how much information each PCA component captures.
+      PC1 captures the largest pattern, making it useful for comparing schools.
+    </p>
+    <img src="images/explained-variance.png" alt="Explained Variance Chart">
+  </div>
+
+  <div class="card">
+    <h2>Interactive Dashboard</h2>
+    <p>
+      The live dashboard allows users to explore schools interactively through
+      the school matching map, PCA analysis, and dataset overview.
+    </p>
+    <a class="button" href="https://school-matching-dashboard-dpiz4r2jsevpoemtybt6j7.streamlit.app/" target="_blank">
+      Open Dashboard
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>EducatEd Choice | Spring 2026 Capstone Project</p>
+</footer>
+
+</body>
+</html>
