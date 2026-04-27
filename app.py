@@ -235,36 +235,6 @@ if view == "Dashboard":
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">PCA Summary</div>', unsafe_allow_html=True)
-
-    s1, s2, s3 = st.columns(3)
-    with s1:
-        st.markdown(f"""
-        <div class="kpi-card">
-            <div class="kpi-title">PC1 Explained Variance</div>
-            <div class="kpi-value">{pc1_pct:.1f}%</div>
-            <div class="kpi-caption">Main academic performance pattern</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with s2:
-        st.markdown(f"""
-        <div class="kpi-card">
-            <div class="kpi-title">PC2 Explained Variance</div>
-            <div class="kpi-value">{pc2_pct:.1f}%</div>
-            <div class="kpi-caption">Secondary stability / structure pattern</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with s3:
-        st.markdown(f"""
-        <div class="kpi-card">
-            <div class="kpi-title">PC1 + PC2 Combined</div>
-            <div class="kpi-value">{pc12_pct:.1f}%</div>
-            <div class="kpi-caption">Information shown in the matching map</div>
-        </div>
-        """, unsafe_allow_html=True)
-
     st.markdown('<div class="section-title">School Matching Map</div>', unsafe_allow_html=True)
 
     fig_map = px.scatter(
@@ -300,10 +270,12 @@ if view == "Dashboard":
     fig_map.update_traces(marker=dict(size=8, line=dict(width=0.6, color="white")))
     fig_map.update_layout(
         height=610,
-        template="plotly_dark",
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(15,23,42,0.75)",
-        font=dict(color="#e5e7eb")
+        template="plotly_white",
+        paper_bgcolor="#ffffff",
+        plot_bgcolor="#ffffff",
+        font=dict(color="#111827"),
+        title_font=dict(size=20, color="#111827"),
+        margin=dict(l=40, r=40, t=70, b=50)
     )
     st.plotly_chart(fig_map, use_container_width=True)
 
@@ -345,10 +317,11 @@ if view == "Dashboard":
         )
         fig_loadings.update_layout(
             height=500,
-            template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15,23,42,0.75)",
-            font=dict(color="#e5e7eb"),
+            template="plotly_white",
+            paper_bgcolor="#ffffff",
+            plot_bgcolor="#ffffff",
+            font=dict(color="#111827"),
+            title_font=dict(size=18, color="#111827"),
             xaxis_title="Contribution Strength",
             yaxis_title=""
         )
@@ -378,10 +351,11 @@ if view == "Dashboard":
         )
         fig_var.update_layout(
             height=500,
-            template="plotly_dark",
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(15,23,42,0.75)",
-            font=dict(color="#e5e7eb"),
+            template="plotly_white",
+            paper_bgcolor="#ffffff",
+            plot_bgcolor="#ffffff",
+            font=dict(color="#111827"),
+            title_font=dict(size=18, color="#111827"),
             yaxis_tickformat=".0%",
             yaxis_title="Variance Explained"
         )
